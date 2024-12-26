@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notepad</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fleur+De+Leah&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap');
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-background-light: #EDEDED;
+            --color-secondary-light: #F5F5F5;
+            --color-accent-light: #DA0037;
+            --color-text-light: #171717;
+            --color-border-light: #444444;
+        }
+
+        .display-div {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            flex: 1;
+        }
+
+        .sidebar {
+            background: var(--color-background-light);
+            flex: 0.2;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .notes {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+        }
+
+        #createnote {
+            margin: 10px;
+            color: #fff;
+            background-color: #7BC74D;
+            font-weight: bold;
+            padding: 10px;
+            width: 90%;
+            border-radius: 5px;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .logo-j {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: "Fleur De Leah", serif;
+            font-size: 2em;
+            user-select: none;
+        }
+
+        .crtsec {
+            width: 300px;
+            border-bottom: 2px solid #D1D4C9;
+            border-top: 2px solid #D1D4C9;
+        }
+
+        ul {
+            overflow-y: auto;
+        }
+
+        .notes li {
+            border: 1px solid transparent;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            background-color: #F5F5F5;
+            padding: 20px;
+            width: 90%;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .main-div {
+            background: var(--color-secondary-light);
+            flex: 0.8;
+        }
+
+        .main-div #editor {
+            width: 95%;
+            height: 90%;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 12px;
+            background: var(--color-secondary-light);
+            font-size: 24px;
+            overflow-y: auto;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        .window {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            background: #E5E1DA;
+        }
+
+        .windowinfo {
+            display: flex;
+            height: 36px;
+            align-items: center;
+            justify-content: space-evenly;
+            background-color: #D1D4C9;
+            width: 100%;
+            color: #F5F5F5;
+            font-weight: bold;
+        }
+
+        .windowinfo div {
+            color: #171717;
+        }
+
+        .windowinfo button {
+            border: 0;
+            font-size: 1em;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        #save {
+            color: #8FD14F;
+        }
+
+        .notes li button {
+            z-index: 200;
+            color: #DA0037;
+            border: 0;
+            font-size: 2.5em;
+            cursor: pointer;
+            background: transparent;
+        }
+
+ .notes li button:hover {
+            color: #b20c35 !important;
+        }
+
+        .notes li:hover {
+            border: 1px solid #444444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="display-div">
+        <div class="sidebar">
+            <div class="logo-j">
+                <h2>Jillian</h2>
+            </div>
+            <div class="crtsec">
+                <button id="createnote">New Note</button>
+            </div>
+            <ul class="notes"></ul>
+        </div>
+        <div class="main-div">
+            <div class="window">
+                <div class="windowinfo">
+                    <p id="title2" style="color: #1E201E; font-family: 'Inconsolata', serif;">Title</p>
+                    
+                    <button class="align-left" onclick="setAlignment('left')"><i class="fa-solid fa-align-left"></i></button>
+                    <button class="align-center" onclick="setAlignment('center')"><i class="fa-solid fa-align-center"></i></button>
+                    <button class="align-right" onclick="setAlignment('right')"><i class="fa-solid fa-align-right"></i></button>
+                    <button class="style-bold" onclick="formatText('bold')"><i class="fa-solid fa-bold"></i></button>
+                    <button class="style-italic" onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
+                    <button class="style-underline" onclick="formatText('underline')"><i class="fa-solid fa-underline"></i></button>
+                    <button id="save" onclick="save()"><i class="fa-solid fa-bookmark" style="color: #295F98;"></i></button>
+                    <button id="close" onclick="closewin()"><i class="fa-solid fa-x" style="color: #DA0037;"></i></button>
+                </div>
+                <div id="editor" contenteditable="true"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/7ead532fee.js" crossorigin="anonymous"></script>
+
+    <script>
+        let note = 0;
+        const NoteList = [];
+
+        function setAlignment(alignment) {
+            document.execCommand('justify' + alignment, false, null);
+        }
+
+        function formatText(command) {
+            document.execCommand(command, false, null);
+        }
+
+        function loadNotes() {
+            for (let i = 0; i < localStorage.length; i++) {
+                const title = localStorage.key(i);
+                const savedNote = localStorage.getItem(title);
+               
+                const notesList = document.querySelector('.notes');
+                const newNote = document.createElement('li');
+                newNote.setAttribute('data-title', title);
+                newNote.className = 'note';
+
+                const currentDate = new Date();
+                const day = String(currentDate.getDate()).padStart(2, '0');
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const year = currentDate.getFullYear();
+                const formattedDate = `${day}/${month}/${year}`;
+
+                newNote.innerHTML = `
+                    <section style="display: flex; justify-content: space-between;">
+                        <h1>${title}</h1>
+                        <button class="delete" onclick="deleteNote(this)"><i class="fa-solid fa-circle-xmark"></i></button>
+                    </section>
+                    <p style="color: #444444;">Created: ${formattedDate}</p>
+                `;
+
+                notesList.appendChild(newNote);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadNotes);
+
+        document.querySelector('.notes').addEventListener('click', function(e) {
+            const noteItem = e.target.closest('li');
+            if (noteItem) {
+                const title = noteItem.getAttribute('data-title');
+                const savedNote = localStorage.getItem(title);
+                document.getElementById('editor').innerHTML = savedNote || '';
+                document.getElementById('title2').innerText = title;
+            }
+        });
+
+        document.getElementById('createnote').addEventListener('click', function() {
+            const noteInput = document.getElementById('editor').innerHTML;
+            const currentDate = new Date();
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const year = currentDate.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+            let title = noteInput.substring(0, 5);
+
+            if (NoteList.includes(title)) {
+                title = title + note; 
+            }
+            
+            NoteList.push(title);
+
+            if (noteInput.trim() !== "") {
+                localStorage.setItem(title, noteInput);
+                const notesList = document.querySelector('.notes');
+
+                const newNote = document.createElement('li');
+                newNote.setAttribute('data-title', title);
+                newNote.className = 'note';
+
+                newNote.innerHTML = `
+                    <section style="display: flex; justify-content: space-between;">
+                        <h1>${title}</h1>
+                        <button class="delete" onclick="deleteNote(this)"><i class="fa-solid fa-circle-xmark"></i></button>
+                    </section>
+                    <p style="color: #444444;">Created: ${formattedDate}</p>
+                `;
+
+                notesList.appendChild(newNote);
+                document.getElementById('editor').innerHTML = '';
+                note++;
+                document.getElementById('title2').innerHTML = 'Title';
+            }
+        });
+
+        function deleteNote(button) {
+            const noteItem = button.closest('li');
+            if (noteItem) {
+                document.getElementById('title2').innerHTML = 'Title';
+                const title = noteItem.getAttribute('data-title');
+                localStorage.removeItem(title); 
+                noteItem.remove(); 
+            }
+        }
+
+        function save() {
+            const writtenData = document.getElementById('editor').innerHTML;
+            const title = document.getElementById('title2').innerText;
+            if (writtenData === '') {
+                alert('Nothing to save bruh');
+            } else if (title == 'Title') {
+                alert('Create a note first');
+            } else if (title) {
+                localStorage.setItem(title, writtenData);
+                alert('Note saved successfully!');
+            }
+        }
+
+        function closewin() {
+            document.getElementById('editor').innerHTML = '';
+            document.getElementById('title2').innerText = 'Title';
+        }
+    </script>
+</body>
+</html>
