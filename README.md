@@ -12,3 +12,4 @@ A simple notepad made using HTML, CSS and JS.
 
 ## Try it out Here
 
+https://diabolicallyinsane.github.io/Notepad-Jullian-/
